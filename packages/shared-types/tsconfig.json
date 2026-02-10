@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist/esm",
+    "composite": true,
+    "incremental": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

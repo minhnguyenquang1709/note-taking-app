@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { NoteModule } from './note/note.module';
 
 @Module({
   imports: [
@@ -13,20 +14,24 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     TypeOrmModule.forRootAsync({
       useFactory(...args) {
-        const envVars = {
+        const postgreEnvVars: TypeOrmModuleOptions = {
+          type: 'postgres',
           host: process.env.DATABASE_WRITE_HOST,
           port: parseInt(process.env.DATABASE_WRITE_PORT || '5432'),
           username: process.env.DATABASE_USERNAME,
           password: String(process.env.DATABASE_PASSWORD),
           database: process.env.DATABASE_NAME,
+          synchronize: true, // auto create tables, disable in production
+          autoLoadEntities: true, // auto load entities from TypeOrmModule.forFeature()
+          logging: true, // enable query logging
         };
-        console.log('Connecting to database with config:', envVars);
+        console.log('Connecting to database with config:\n', postgreEnvVars);
         return {
-          type: 'postgres',
-          ...envVars,
+          ...postgreEnvVars,
         };
       },
     }),
+    NoteModule
   ],
   controllers: [AppController],
   providers: [AppService],

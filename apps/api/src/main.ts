@@ -43,10 +43,11 @@ async function bootstrap() {
   // Object.keys(userApiDocument.paths).
 
   // setup swagger
-  SwaggerModule.setup('api', app, userApiDocument, {
+  SwaggerModule.setup('api/docs', app, userApiDocument, {
     swaggerOptions: {
       operationsSorter: 'alpha',
       tagsSorter: 'alpha',
+      theme: 'light',
     },
   });
 
