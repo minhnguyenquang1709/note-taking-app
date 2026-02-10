@@ -9,17 +9,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     ConfigModule.forRoot({
       // load env variables
       isGlobal: true, // module is global, no need to import in other modules
-      envFilePath: `../.env`,
+      envFilePath: ['.env'],
     }),
     TypeOrmModule.forRootAsync({
       useFactory(...args) {
-        return {
-          type: 'postgres',
+        const envVars = {
           host: process.env.DATABASE_WRITE_HOST,
           port: parseInt(process.env.DATABASE_WRITE_PORT || '5432'),
           username: process.env.DATABASE_USERNAME,
-          password: process.env.DATABASE_PASSWORD,
+          password: String(process.env.DATABASE_PASSWORD),
           database: process.env.DATABASE_NAME,
+        };
+        console.log('Connecting to database with config:', envVars);
+        return {
+          type: 'postgres',
+          ...envVars,
         };
       },
     }),
