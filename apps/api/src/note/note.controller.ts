@@ -1,15 +1,13 @@
-import { Body, Controller, Get, Patch, Post } from "@nestjs/common";
-import { NoteService } from "./note.service";
-import { ApiOperation } from "@nestjs/swagger";
-import { CreateNoteDto, UpdateNoteDto } from "./note.dto";
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { NoteService } from './note.service';
+import { ApiOperation } from '@nestjs/swagger';
+import { CreateNoteDto, UpdateNoteDto } from './note.dto';
 
-@Controller({path: 'note'})
+@Controller({ path: 'api/note' })
 export class NoteController {
-  constructor(private readonly noteService: NoteService) {
-    
-  }
+  constructor(private readonly noteService: NoteService) {}
 
-  @Get("")
+  @Get('')
   @ApiOperation({
     description: 'Retrieve all note files',
   })
@@ -17,19 +15,19 @@ export class NoteController {
     return await this.noteService.findNotes();
   }
 
-  @Post("")
+  @Post('')
   @ApiOperation({
     description: 'Create a new note',
   })
   async createNote(@Body() dto: CreateNoteDto) {
-    return await this.noteService.createNote(dto);    
+    return await this.noteService.createNote(dto);
   }
 
-  @Patch("")
+  @Patch('')
   @ApiOperation({
     description: 'Update an existing note',
   })
   async updateNote(@Body() dto: UpdateNoteDto) {
-    return await this.noteService.updateNote(dto.id, dto);    
+    return await this.noteService.updateNote(dto.id, dto);
   }
 }

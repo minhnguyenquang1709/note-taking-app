@@ -1,12 +1,14 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Note } from "./entity/note.entity";
-import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
-import { CreateNoteDto } from "./note.dto";
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Note } from './entity/note.entity';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { CreateNoteDto } from './note.dto';
 
 @Injectable()
 export class NoteService {
-  constructor(@InjectRepository(Note) private readonly noteRepository: Repository<Note>) {}
+  constructor(
+    @InjectRepository(Note) private readonly noteRepository: Repository<Note>,
+  ) {}
 
   async findNotes(options?: FindManyOptions<Note>) {
     return await this.noteRepository.find(options);
@@ -17,8 +19,12 @@ export class NoteService {
   }
 
   async createNote(dto: CreateNoteDto) {
-    const note = await this.noteRepository.create(dto);
-    return await this.noteRepository.save(note);
+    try {
+      const note = await this.noteRepository.create(dto);
+      return await this.noteRepository.save(note);
+    } catch (error) {
+      throw new BadRequestException('Failed to create note');
+    }
   }
 
   async updateNote(id: string, dto: Partial<CreateNoteDto>) {

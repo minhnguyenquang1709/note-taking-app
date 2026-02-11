@@ -3,12 +3,12 @@ import { IsOptional, IsString, IsUUID, Length } from 'class-validator';
 
 export class CreateNoteDto {
   @ApiProperty()
+  @IsString()
   title: string;
 
   @ApiPropertyOptional()
   @IsString()
   @IsOptional()
-  @Length(0, 1000)
   content?: string;
 
   @ApiProperty()

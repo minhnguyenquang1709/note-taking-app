@@ -1,9 +1,34 @@
-import { Module } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  Module,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { NoteModule } from './note/note.module';
+import { UserModule } from './user/user.module';
+import { APP_FILTER } from '@nestjs/core';
+
+@Catch(HttpException)
+class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp(); // get http context
+    const response = ctx.getResponse(); // get response object to manually define response data
+
+    const status = exception.getStatus(); // get http status code
+    const exceptionResponse = exception.getResponse(); // get response body
+
+    response.status(status).json({
+      success: false,
+      code: exceptionResponse['error_code'] || status,
+      message: exceptionResponse['message'] || exceptionResponse,
+    });
+  }
+}
 
 @Module({
   imports: [
@@ -31,9 +56,16 @@ import { NoteModule } from './note/note.module';
         };
       },
     }),
-    NoteModule
+    NoteModule,
+    UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

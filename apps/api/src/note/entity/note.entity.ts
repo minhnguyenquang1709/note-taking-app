@@ -1,6 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ENoteStatus, TableName } from '@repo/shared-types';
-import { Column, CreateDateColumn, Entity, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity(TableName.NOTE)
 export class Note {
@@ -16,7 +23,7 @@ export class Note {
   @ApiProperty()
   content: string;
 
-  @Column()
+  @Column('uuid')
   @ApiProperty()
   userId: string;
 
@@ -31,7 +38,7 @@ export class Note {
   updatedAt?: Date;
 
   @Column({
-    default: ENoteStatus.ACTIVE
+    default: ENoteStatus.ACTIVE,
   })
   @ApiProperty()
   status: ENoteStatus;
